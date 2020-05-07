@@ -11,48 +11,26 @@
  */
 class Solution {
 public:
-    int height(TreeNode* root,int x,int h)
+    pair<int,int> levelAndParent(TreeNode* root,int x,int h,int p)
     {
         if(!root)
-            return -1;
+            return make_pair(-1,-1);
         if(root->val==x)
-            return h;
-        int l= height(root->left, x, h+1);
-        int r=height(root->right,x, h+1);
-         if(l==-1)
+            return make_pair(h,p);
+        pair<int,int> l=levelAndParent(root->left, x, h+1,root->val);
+        pair<int,int> r=levelAndParent(root->right,x, h+1,root->val);
+         if(l.first==-1 || l.second==-1)
              return r;
         return l;
     }
-public:
-    int parent(TreeNode* root, int x,int p)
-    {
-        if(!root)
-            return -1;
-        if(root->val==x)
-            return p;
-
-        int l=parent(root->left,x,root->val);
-        int r=parent(root->right,x,root->val);
-        if(l==-1)
-            return r;
-        return l;
-    }
-public:
+    
     bool isCousins(TreeNode* root, int x, int y) {
-        if(!root)
+        if(!root || x==y)
             return false;
-        if(x==y)
-            return false;
-        int h1=height(root,x,0);
-        int h2=height(root,y,0);
-        cout<<h1<<" "<<h2<<endl;
-        if(h1!=h2)
-            return false;
-        int p1=parent(root,x,-1);
-        int p2=parent(root,y,-1);
-        cout<<p1<<" "<<p2<<endl;
-        if(p1==p2)
-            return false;
-        return true;
+        pair<int,int>p1=levelAndParent(root,x,0,-1);
+        pair<int,int>p2=levelAndParent(root,y,0,-1);
+        if(p1.first == p2.first && p1.second!=p2.second)
+            return true;
+        return false;
     }
 };
